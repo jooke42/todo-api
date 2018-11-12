@@ -1,22 +1,16 @@
-# Let travis know the language it needs to run
 language: python
-
-# Mention the python version in which travis will run the app
 python:
-  - "3.6"
-
-
-# command to install dependencies in the requirements file
-# You can also install the coverage here to avoid it being in the requirements file
-# It is important to avoid things like coverage, pep8 that are not required to run the app
+- '3.6'
 install:
-  - pip install codecov
-  - pip install -r requirements.txt
-
- # Another command/method to run tests
+- pip install codecov
+- pip install -r requirements.txt
 script:
-  - pytest -v
-  - pytest --cov=api
-
+- pytest -v
+- pytest --cov=api
 after_success:
-  - codecov
+- codecov
+deploy:
+  provider: heroku
+  app: todos-api-jookeo
+  api_key:
+    secure: EawHr078kSNgOQ9rHxRatfTY0PCOCSHVCMaPdfk3n3Re1E4tEVyNYMKRa945OXxZWjxN6Rgj827XN0fNzI9iuQ8aG7MWWACkJjvlNhMrFVBGN6ma8tZmoG6GUiWYgwmpF107xy0e8Bfe3eg4ieSzbW3T15BL/I7QbDLfOS88heiL3C8i4ysWmL28Ur1j/SKFOcPy924RaWKSU+YO4DddsqtF02ucGiLRd1BNL3pjd6fOqA7yngbH5xDrbsyZmcT8swIRKVDwAmXiUyJ51IGKiGU8bWTw37Swi3RZPr0Bn3klXEuA6n+Ru/qcDERl5TDwwT+rh8X8R7KwiGYPvjSKf0w4ZiMAOSftyRstpWji3FAYXug6ZWXQpg7hF5hmB3KtUMxNZ7HAdyvlwkIRsaLguZZpddcg+IEU0kjtNixO5376YcNEY6ckkwrKhryA7EoCr+azPYGtYSl3D23iV/D+lvo968yRT15H6FNp81RqG0lKaffgbfM7Xcwn9xlGvqwNGdWKSEWUTVwygUyepYX9YjDt/22pkn3cYqM5bXn39cgbJjWXfpXevNFryqQoBSv2DzdpG3C0vH+KG+XxLh/UDFPassN+p8Mmg3HaXQJxBeW0NMx4wnLCUxZ+/0UvNA0+lM+O0MbSJP98FyEvy4jCEGjsRx3uhx1gFuLtuCm6R7s=
