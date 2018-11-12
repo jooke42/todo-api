@@ -37,3 +37,6 @@ nosetests.xml
 
 venv
 app.db
+
+# remove .idea pycharm
+.idea
