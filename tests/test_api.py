@@ -9,7 +9,7 @@ def client():
     yield client
 
 
-class TestApi:
+class TestIntegrationTodo:
 
     def test_todos_get(self, client):
         """
@@ -49,7 +49,7 @@ class TestApi:
             'description': 'testing posting todo with api'
         }, follow_redirects=True)
 
-        assert  rv.status_code == 401
+        assert rv.status_code == 401
 
         rv = client.post('/todos')
 
@@ -80,9 +80,9 @@ class TestApi:
             'description': 'new description'
         }, follow_redirects = True)
 
-        assert rv.status_code == 201
+        assert rv.status_code == 200
 
         json_response = rv.get_json()
 
-        assert json_response['todo']['title'] == 'put title'
-        assert json_response['todo']['description'] == 'new description'
+        assert json_response['title'] == 'put title'
+        assert json_response['description'] == 'new description'
