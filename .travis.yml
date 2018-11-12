@@ -10,10 +10,11 @@ python:
 # You can also install the coverage here to avoid it being in the requirements file
 # It is important to avoid things like coverage, pep8 that are not required to run the app
 install:
+  - pip install --user codecov
   - pip install -r requirements.txt
 
  # Another command/method to run tests
 script: pytest -v --cov=api
 
 after_success:
-- bash < (curl -s https://codecov.io/bash)
+  - codecov
