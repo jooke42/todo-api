@@ -14,7 +14,9 @@ install:
   - pip install -r requirements.txt
 
  # Another command/method to run tests
-script: pytest -v --cov=api
-
+script:
+  - pytest -v
+  - pytest --cov=api
+  
 after_success:
   - codecov
