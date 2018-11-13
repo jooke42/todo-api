@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restplus import Api
-
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import ProductionConfig
@@ -8,7 +8,7 @@ from config import ProductionConfig
 api = Api()
 db = SQLAlchemy()
 migrate = Migrate()
-
+cors = CORS()
 
 def create_app(config_class=ProductionConfig):
     """
@@ -20,7 +20,7 @@ def create_app(config_class=ProductionConfig):
     api.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
-
+    cors.init_app(app, resources={r"/*": {"origins": "*"}})
     return app
 
 
