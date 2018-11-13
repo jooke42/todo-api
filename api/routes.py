@@ -32,8 +32,9 @@ class TodoList(Resource):
         todo_obj = models.Todo(**todo)
         db.session.add(todo_obj)
         db.session.commit()
+        db.session.refresh(todo_obj)
 
-        return jsonify(todo_obj.to_dict()), 201
+        return todo_obj.to_dict(), 201
 
 
 @api.route('/todos/<int:todo_id>')

@@ -75,8 +75,10 @@ class TestIntegrationTodo:
         rv = client.post('/todos', json={
             'title': 'post test'
         }, follow_redirects = True)
-
+        json_response = json.loads(rv.data.decode('utf8'))
         assert rv.status_code == 201
+        assert json_response['title'] == 'post test'
+        assert json_response['complete'] == False
 
     def test_todos_post_failed(self, client):
         """
