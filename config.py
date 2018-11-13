@@ -17,7 +17,8 @@ class BaseConfig:
 
 class ProductionConfig(BaseConfig):
     SECRET_KEY = os.getenv('SECRET_KEY_TODO')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABSASE_URI_TODO')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
