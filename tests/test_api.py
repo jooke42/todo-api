@@ -1,27 +1,67 @@
 # tests/test_api.py
-from api import app
+from api import create_app, db, models
 import json, request, pytest, os
+from config import TestingConfig
 
 
 @pytest.fixture
-def client():
-    client = app.test_client()
-    yield client
+def app():
+    app = create_app(TestingConfig)
+    with app.app_context():
+        db.create_all()
+        print("create db")
+        yield app
+        print("delete db")
+        db.drop_all()
+
+
+@pytest.fixture
+def client(app):
+    print("return client")
+    return app.test_client()
+
+
+@pytest.fixture
+def a_todo(app):
+
+    td = models.Todo(
+        title='test 1',
+        description='premier test de l\'api todo'
+    )
+    with app.app_context():
+        db.session.add(td)
+        print("added td")
+        db.session.commit()
+        db.session.flush()
+        td_dict = td.to_dict()
+    return td_dict
 
 
 class TestIntegrationTodo:
 
-    def test_todos_get(self, client):
+    def test_fixture_add_todo(self, a_todo, app):
+        with app.app_context():
+            todos = models.Todo.query.all()
+        assert todos
+
+    def test_todos_get_all(self, client, a_todo):
         """
         test todos URI with GET return all todos in database
         """
 
-        expected_response = {
-            'id': 1,
-            'title': 'test 1',
-            'description': 'premier test de l\'api todo'
-        }
+        expected_response = a_todo
 
+        response = client.get(f"/todos/{a_todo['id']}")
+        json_response = json.loads(response.data.decode('utf8'))
+
+        assert response.status_code == 200
+        assert json_response == expected_response
+
+    def test_todos_get(self, client, a_todo):
+        """
+        test todos URI with GET return all todos in database
+        """
+        expected_response = a_todo
         response = client.get('/todos')
         json_response = json.loads(response.data.decode('utf8'))
 
@@ -69,13 +109,14 @@ class TestIntegrationTodo:
         assert rv.status_code == 404
 
 
-    def test_todos_put(self, client):
+
+    def test_todos_put(self, client,a_todo):
         """
         assert failed put if id doesn't exist or json not valid
         :param client:
         :return:
         """
-        rv = client.put('/todos/1', json={
+        rv = client.put(f"/todos/{a_todo['id']}", json={
             'title': 'put title',
             'description': 'new description'
         }, follow_redirects = True)
@@ -86,3 +127,13 @@ class TestIntegrationTodo:
 
         assert json_response['title'] == 'put title'
         assert json_response['description'] == 'new description'
+
+    def test_todos_delete(self,client,a_todo):
+        rv = client.delete(f"/todos/{a_todo['id']}", follow_redirects=True)
+
+        assert rv.status_code == 204
+
+    def test_todos_delete_failed(self,client,a_todo):
+        rv = client.delete(f"/todos/{a_todo['id']+8}", follow_redirects=True)
+
+        assert rv.status_code == 404

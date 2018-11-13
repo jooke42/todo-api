@@ -1,15 +1,30 @@
 import os
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class Config:
+class BaseConfig:
+    SECRET_KEY = 'may_the_force_be_with_you'
 
+    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///%s' % (os.path.join(PROJECT_ROOT, "app.db"))
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    DEBUG = False
+    ERROR_404_HELP = False
+
+
+class ProductionConfig(BaseConfig):
+    SECRET_KEY = os.getenv('SECRET_KEY_TODO')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABSASE_URI_TODO')
+
+class DevelopmentConfig(BaseConfig):
     DEBUG = True
 
-    # Define the application directory
 
+class TestingConfig(BaseConfig):
+    TESTING = True
 
-    # ( Define the database - we are working with
-    # SQLite for this example
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    # Use in-memory SQLite database for testing
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///'

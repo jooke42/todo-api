@@ -1,10 +1,27 @@
 from flask import Flask
-from config import Config
 from flask_restplus import Api
 
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from config import ProductionConfig
 
-app = Flask(__name__)
-app.config.from_object(Config)
-api = Api(app)
+api = Api()
+db = SQLAlchemy()
+migrate = Migrate()
 
-from api import routes
+
+def create_app(config_class=ProductionConfig):
+    """
+    Entry point to the Flask RESTful Server application.
+    """
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    api.init_app(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    return app
+
+
+from api import routes, models
