@@ -8,7 +8,7 @@ from flask import jsonify
 todo = api.model('Todo', {
     'id': fields.Integer(readOnly=True, description='The task unique identifier'),
     'title': fields.String(required=True, description='The task details'),
-    'description': fields.String(required=False, description='The task details')
+    'complete': fields.Boolean(required=False, description='The task completed')
 })
 
 ns = api.namespace('todos', description='TODO operations')
@@ -67,7 +67,8 @@ class Todo(Resource):
             api.abort(404, f"Todo {todo_id} doesn't exist")
 
         todo_obj.title = api.payload['title']
-        todo_obj.description = api.payload['description']
+        if 'complete' in api.payload:
+            todo_obj.complete = api.payload['complete']
         db.session.commit()
         return todo_obj.to_dict(), 200
 

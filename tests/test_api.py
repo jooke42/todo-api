@@ -26,7 +26,6 @@ def a_todo(app):
 
     td = models.Todo(
         title='test 1',
-        description='premier test de l\'api todo'
     )
     with app.app_context():
         db.session.add(td)
@@ -74,8 +73,7 @@ class TestIntegrationTodo:
         """
 
         rv = client.post('/todos', json={
-            'title': 'post test',
-            'description': 'testing posting todo with api'
+            'title': 'post test'
         }, follow_redirects = True)
 
         assert rv.status_code == 201
@@ -86,7 +84,7 @@ class TestIntegrationTodo:
         """
 
         rv = client.post('/todos', json={
-            'description': 'testing posting todo with api'
+            'complete': True
         }, follow_redirects=True)
 
         assert rv.status_code == 401
@@ -102,8 +100,7 @@ class TestIntegrationTodo:
         :return:
         """
         rv = client.put('/todos/0', json={
-            'title': 'put title',
-            'description': 'new description'
+            'title': 'put title'
         }, follow_redirects = True)
 
         assert rv.status_code == 404
@@ -118,7 +115,6 @@ class TestIntegrationTodo:
         """
         rv = client.put(f"/todos/{a_todo['id']}", json={
             'title': 'put title',
-            'description': 'new description'
         }, follow_redirects = True)
 
         assert rv.status_code == 200
@@ -126,7 +122,6 @@ class TestIntegrationTodo:
         json_response = rv.get_json()
 
         assert json_response['title'] == 'put title'
-        assert json_response['description'] == 'new description'
 
     def test_todos_delete(self,client,a_todo):
         rv = client.delete(f"/todos/{a_todo['id']}", follow_redirects=True)

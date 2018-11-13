@@ -12,4 +12,4 @@ class Dictable:
 class Todo(db.Model, Dictable):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
-    description = db.Column(db.Text)
+    complete = db.Column(db.Boolean, default=False)
