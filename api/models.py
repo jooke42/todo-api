@@ -1,7 +1,7 @@
 from api import db
 
 
-class dictable():
+class Dictable:
 
     def to_dict(self, hidden=None):
         return {
@@ -9,9 +9,7 @@ class dictable():
         }
 
 
-
-class Todo(db.Model,dictable):
+class Todo(db.Model, Dictable):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     description = db.Column(db.Text)
-
